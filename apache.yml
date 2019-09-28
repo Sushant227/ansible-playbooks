@@ -1,0 +1,32 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: install apache on RHEL
+    yum: 
+      name: "{{ apache_pack_rhel }}"
+      state: present
+    notify: restart apache on redhat
+    when: ansible_os_family == "RedHat"
+  - name: install apache on debian
+    apt:
+      name: "{{ apache_pack_deb }}"
+      state: present
+    notify: restart apache on Debian
+    when: ansible_os_family == "Debian"
+  - name: set service name in case of redhat
+    set_fact:
+      service_name: "{{apache_pack_rhel}}"
+    when: ansible_os_family == "RedHat"
+  - name: set service name in case of debian
+    set_fact:
+      service_name: "{{apache_pack_deb}}"
+    when: ansible_os_family == "Debian"
+  - name: display service name
+    debug:
+      msg: "{{service_name}}"
+  - name: enable service 
+    service:
+      name: "{{service_name}}"
+      enabled: true
+      state: started

@@ -1,0 +1,16 @@
+---
+- theaters:
+  - name: sandya
+    timings:
+    - 10:00
+    - 12:00
+    - 16:00
+    cost:
+    - 200
+  - name: gokul 
+    timings:
+    - 10:00
+    - 12:00
+    cost:
+    - 100
+...

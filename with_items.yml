@@ -1,0 +1,15 @@
+# This will run debug three times since the list is flattened
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: print all values
+    debug:
+      msg: "{{ item }}"
+    vars:
+      nested_list:
+      - - one
+        - two
+        - three
+    with_items: "{{ nested_list }}"
+...

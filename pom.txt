@@ -1,0 +1,52 @@
+<distributionManagement>
+	    <repository>
+	      <id>nexus-release</id>
+	      <name>Mithun Technologies Releases Nexus Repository</name>
+	      <url>http://192.168.230.145:8081/repository/Maven-release/</url>
+	    </repository>
+	    <snapshotRepository>
+	      <id>nexus-snapshot</id>
+	      <name>Mithun Technologies Snapshot Nexus Repository </name>
+	      <url>http://192.168.230.145:8081/repository/Maven-SNAPSHOT/</url>
+	    </snapshotRepository>
+	</distributionManagement>
+	<repositories>
+        <repository>
+                <id>proxy</id>
+                <url>http://192.168.230.145:8081/repository/Maven-test-proxy/</url>
+        </repository>
+        <repository>
+                <id>nexus</id>
+                <url>http://192.168.230.145:8081/repository/Maven-release/</url>
+        </repository>
+        <repository>
+                <id>snapshot</id>
+                <url>http://192.168.230.145:8081/repository/Maven-SNAPSHOT/</url>
+        </repository>
+        </repositories>
+        <pluginRepositories>
+         <pluginRepository>
+                <id>proxy</id>
+                <url>http://192.168.230.145:8081/repository/Maven-test-proxy/</url>
+         </pluginRepository>
+        </pluginRepositories>
+
+
+
+node('master'){  
+    
+    def mavenHome=tool name: "M2_HOME", type: "maven"
+
+stage('Checkout the code') {
+    git credentialsId: 'd9982e86-0bfc-4e06-80d8-2f53410f6b74', url: 'https://github.com/devopstrainingblr/maven-web-application'
+}
+stage('Build'){
+    sh "$(mavenHome)/bin/mvn clean package"
+}
+stage('SonarQube'){
+    sh "${mavenHome}/bin/mvn sonar:sonar"
+}
+stage('upload artifact to Nexus'){
+    sh "${mavenHome}/bin/mvn deploy"
+}
+}

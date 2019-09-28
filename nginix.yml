@@ -1,0 +1,21 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: Adding EPEL Repository
+    yum:
+      name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+      state: present
+  - name: install nginx
+    yum:
+      name: nginx
+      state: present
+  - name: Start/Enable ngnix
+    systemd:
+      name: nginx
+      state: started
+  - name: Enable service nginx
+    service:
+      name: nginx
+      enabled: yes
+...

@@ -1,0 +1,10 @@
+- name: restart apache on debian
+  service: 
+    name: "{{ apache_pack_deb }}"
+    state: restarted
+  listen: restart apache servers
+- name: restart apache on RedHat
+  service: 
+    name: "{{ apache_pack_rhel }}"
+    state: restarted
+  listen: restart apache servers
