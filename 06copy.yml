@@ -1,11 +1,36 @@
 ---
- - hosts: all
+ - hosts: webserver
    become: true
+   gather_facts: true
    tasks:
-     - name: Copy ansible inventory file to all hostmachines
-       copy: src=/etc/ansible/hosts 
-             dest=/tmp/  
-             owner=root 
-             group=root 
-             mode=0666
+           #- name: stat build
+       #stat: path=/var/lib/jenkins/workspace/insurance_frontend/build
+       #register: build_stat
+       #- name: rename directory
+       #command: mv /var/lib/jenkins/workspace/insurance_frontend/build /var/lib/jenkins/workspace/insurance_frontend/build3
+       #       when: build_stat.stat.exists
+     - name: Change file ownership, group and permissions
+       file:
+         path: /var/lib/jenkins/workspace/insurance_frontend/build
+         state: directory
+         owner: jenkins
+         group: jenkins
+         recurse: yes
+         mode: '0777'
+     - name: create a directory
+       file: 
+         path: /opt/apache-tomcat-9.0.26/webapps/build3
+         state: directory            
+         mode: '0777'
+         #- name: Create a directory if it does not exist
+         #file:
+         #path: /opt/apache-tomcat-9.0.26/webapps/build4
+         #state: directory
+         #mode: '0755'    
+     - name: Copy build directory to webapps directory
+       copy:
+         src: /var/lib/jenkins/workspace/insurance_frontend/build/
+         dest: /opt/apache-tomcat-9.0.26/webapps/build3/
+         remote_src: yes  
+         directory_mode: yes
 ...
